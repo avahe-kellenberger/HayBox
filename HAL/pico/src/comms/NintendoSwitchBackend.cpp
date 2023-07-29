@@ -6,6 +6,10 @@
 #include <Adafruit_TinyUSB.h>
 #include <TUCompositeHID.hpp>
 
+#include <chrono>
+
+#define ANALOG_STICK_NEUTRAL 128
+
 // clang-format off
 
 #define HID_REPORT_DESC(...) \
@@ -85,10 +89,10 @@ NintendoSwitchBackend::NintendoSwitchBackend(InputSource **input_sources, size_t
         capture: false,
         reserved0: 0,
         hat: SWITCH_HAT_CENTERED,
-        lx: 128,
-        ly: 128,
-        rx: 128,
-        ry: 128,
+        lx: ANALOG_STICK_NEUTRAL,
+        ly: ANALOG_STICK_NEUTRAL,
+        rx: ANALOG_STICK_NEUTRAL,
+        ry: ANALOG_STICK_NEUTRAL,
         reserved1: 0,
     };
 }
@@ -98,6 +102,11 @@ NintendoSwitchBackend::~NintendoSwitchBackend() {}
 void NintendoSwitchBackend::RegisterDescriptor() {
     TUCompositeHID::addDescriptor(_descriptor, sizeof(_descriptor));
 }
+
+const float FRAME_DURATION = 1.0 / 60.0;
+
+bool isRightStickNeutral = true;
+auto begin = std::chrono::high_resolution_clock::now();
 
 void NintendoSwitchBackend::SendReport() {
   ScanInputs(InputScanSpeed::SLOW);
@@ -109,7 +118,25 @@ void NintendoSwitchBackend::SendReport() {
 
   ScanInputs(InputScanSpeed::FAST);
 
+  bool wasRightStickNeutral = isRightStickNeutral;
   UpdateOutputs();
+  isRightStickNeutral =
+    _outputs.rightStickX == ANALOG_STICK_NEUTRAL && _outputs.rightStickY == ANALOG_STICK_NEUTRAL;
+
+  if (wasRightStickNeutral && !isRightStickNeutral) {
+    // The right stick moved from the neutral position.
+    // Start our timer!
+    begin = std::chrono::high_resolution_clock::now();
+  }
+
+  if (!isRightStickNeutral) {
+    // If the stick input is not neutral for more than 1 frame, reset value to neutral.
+    std::chrono::duration<float, std::ratio<1, 1>> elapsed = std::chrono::high_resolution_clock::now() - begin;
+    if (elapsed.count() >= FRAME_DURATION) {
+      _outputs.rightStickX = ANALOG_STICK_NEUTRAL;
+      _outputs.rightStickY = ANALOG_STICK_NEUTRAL;
+    }
+  }
 
   // Digital outputs
   _report.y = _outputs.y;
