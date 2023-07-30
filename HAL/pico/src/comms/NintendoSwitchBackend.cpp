@@ -8,8 +8,6 @@
 
 #include <chrono>
 
-#define ANALOG_STICK_NEUTRAL 128
-
 // clang-format off
 
 #define HID_REPORT_DESC(...) \
@@ -103,11 +101,6 @@ void NintendoSwitchBackend::RegisterDescriptor() {
     TUCompositeHID::addDescriptor(_descriptor, sizeof(_descriptor));
 }
 
-const float FRAME_DURATION = 1.0 / 60.0;
-
-bool isRightStickNeutral = true;
-auto begin = std::chrono::high_resolution_clock::now();
-
 void NintendoSwitchBackend::SendReport() {
   ScanInputs(InputScanSpeed::SLOW);
   ScanInputs(InputScanSpeed::MEDIUM);
@@ -118,20 +111,20 @@ void NintendoSwitchBackend::SendReport() {
 
   ScanInputs(InputScanSpeed::FAST);
 
-  bool wasRightStickNeutral = isRightStickNeutral;
+  bool wasRightStickNeutral = _isRightStickNeutral;
   UpdateOutputs();
-  isRightStickNeutral =
+  _isRightStickNeutral =
     _outputs.rightStickX == ANALOG_STICK_NEUTRAL && _outputs.rightStickY == ANALOG_STICK_NEUTRAL;
 
-  if (wasRightStickNeutral && !isRightStickNeutral) {
+  if (wasRightStickNeutral && !_isRightStickNeutral) {
     // The right stick moved from the neutral position.
     // Start our timer!
-    begin = std::chrono::high_resolution_clock::now();
+    _timerStart = std::chrono::high_resolution_clock::now();
   }
 
-  if (!isRightStickNeutral) {
+  if (!_isRightStickNeutral) {
     // If the stick input is not neutral for more than 1 frame, reset value to neutral.
-    std::chrono::duration<float, std::ratio<1, 1>> elapsed = std::chrono::high_resolution_clock::now() - begin;
+    std::chrono::duration<float, std::ratio<1, 1>> elapsed = std::chrono::high_resolution_clock::now() - _timerStart;
     if (elapsed.count() >= FRAME_DURATION) {
       _outputs.rightStickX = ANALOG_STICK_NEUTRAL;
       _outputs.rightStickY = ANALOG_STICK_NEUTRAL;

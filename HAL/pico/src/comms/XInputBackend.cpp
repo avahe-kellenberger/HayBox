@@ -5,6 +5,8 @@
 
 #include <Adafruit_USBD_XInput.hpp>
 
+#include <chrono>
+
 XInputBackend::XInputBackend(InputSource **input_sources, size_t input_source_count)
     : CommunicationBackend(input_sources, input_source_count) {
     Serial.end();
@@ -33,7 +35,27 @@ void XInputBackend::SendReport() {
 
     ScanInputs(InputScanSpeed::FAST);
 
+    bool wasRightStickNeutral = _isRightStickNeutral;
+
     UpdateOutputs();
+
+    _isRightStickNeutral =
+      _outputs.rightStickX == ANALOG_STICK_NEUTRAL && _outputs.rightStickY == ANALOG_STICK_NEUTRAL;
+
+    if (wasRightStickNeutral && !_isRightStickNeutral) {
+      // The right stick moved from the neutral position.
+      // Start our timer!
+      _timerStart = std::chrono::high_resolution_clock::now();
+    }
+
+    if (!_isRightStickNeutral) {
+      // If the stick input is not neutral for more than 1 frame, reset value to neutral.
+      std::chrono::duration<float, std::ratio<1, 1>> elapsed = std::chrono::high_resolution_clock::now() - _timerStart;
+      if (elapsed.count() >= FRAME_DURATION) {
+        _outputs.rightStickX = ANALOG_STICK_NEUTRAL;
+        _outputs.rightStickY = ANALOG_STICK_NEUTRAL;
+      }
+    }
 
     // Digital outputs
     _report.a = _outputs.a;
