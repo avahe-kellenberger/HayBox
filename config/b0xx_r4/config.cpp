@@ -60,6 +60,12 @@ Pinout pinout = {
     .nunchuk_scl = -1,
 };
 
+/**
+ * TODO:
+ * 1. Read the json file and parse to some json object
+ * 2. Pass this object to the UltimateR4 profile...
+ */
+
 void setup() {
   // Create GPIO input source and use it to read button states for checking button holds.
   GpioButtonInput *gpio_input = new GpioButtonInput(button_mappings, button_count);

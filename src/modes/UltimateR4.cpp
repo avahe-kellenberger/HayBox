@@ -53,6 +53,37 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs
     );
 
+    /**
+     * If I want to check if "left" is pressed,
+     * I need the button selected by the user that represents left.
+     *
+     * Say the user swaps L (index 0) and Left (index 1).
+     * To check for "left",
+     *
+     * I would actually need to check index 0 instead of index 1.
+     * This means I need to derive the "answer" 0 from 1, e.g.:
+     *
+     * int getButtonIndex(int defaultIndex) {
+     *   return buttons[defaultIndex];
+     * }
+     *
+     * Above, buttons is an int[] which contains the remapped button indices.
+     * We can then do the below:
+     * bool isLeftPressed(InputState &inputs) {
+     *   return isPressed(buttons[1]);
+     * }
+     *
+     * bool isRPressed(InputState &inputs) {
+     *   return isPressed(buttons[8]);
+     * }
+     * and so on.
+     *
+     * We then need to implement the "isPressed" function.
+     * This function takes in the default index of a button,
+     * and returns the corresponding InputState value.
+     * This could be a simple case statement with hard-coded "returns left", etc.
+     */
+
     bool shield_button_pressed = inputs.l || inputs.r;
 
     if (inputs.mod_x) {
