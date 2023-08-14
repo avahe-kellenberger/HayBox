@@ -4,49 +4,142 @@
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 228
 
+#define pressed(b) (this->isPressed(inputs, b))
+
+/**
+ * Default button indices.
+ */
+const int btnL = 0;
+const int btnLeft = 1;
+const int btnDown = 2;
+const int btnRight = 3;
+const int btnModX = 4;
+const int btnModY = 5;
+const int btnStart = 6;
+const int btnR = 7;
+const int btnY = 8;
+const int btnLightshield = 9;
+const int btnMidshield = 10;
+const int btnB = 11;
+const int btnX = 12;
+const int btnZ = 13;
+const int btnUp = 14;
+const int btnCLeft = 15;
+const int btnCUp = 16;
+const int btnCDown = 17;
+const int btnA = 18;
+const int btnCRight = 19;
+
 UltimateR4::UltimateR4(socd::SocdType socd_type) {
-    _socd_pair_count = 4;
-    _socd_pairs = new socd::SocdPair[_socd_pair_count]{
-        socd::SocdPair{ &InputState::left,   &InputState::right, socd_type },
-        socd::SocdPair{ &InputState::down,   &InputState::up, socd_type },
-        socd::SocdPair{ &InputState::c_left, &InputState::c_right, socd_type },
-        socd::SocdPair{ &InputState::c_down, &InputState::c_up, socd_type }
-    };
+  _socd_pair_count = 4;
+  _socd_pairs = new socd::SocdPair[_socd_pair_count]{
+    socd::SocdPair{ &InputState::left,   &InputState::right, socd_type },
+    socd::SocdPair{ &InputState::down,   &InputState::up, socd_type },
+    socd::SocdPair{ &InputState::c_left, &InputState::c_right, socd_type },
+    socd::SocdPair{ &InputState::c_down, &InputState::c_up, socd_type }
+  };
+
+  // Default button index mapping
+  _buttons[btnL] = btnL;
+  _buttons[btnLeft] = btnLeft;
+  _buttons[btnDown] = btnDown;
+  _buttons[btnRight] = btnRight;
+  _buttons[btnModX] = btnModX;
+  _buttons[btnModY] = btnModY;
+  _buttons[btnStart] = btnStart;
+  _buttons[btnR] = btnR;
+  _buttons[btnY] = btnY;
+  _buttons[btnLightshield] = btnLightshield;
+  _buttons[btnMidshield] = btnMidshield;
+  _buttons[btnB] = btnB;
+  _buttons[btnX] = btnX;
+  _buttons[btnZ] = btnZ;
+  _buttons[btnUp] = btnUp;
+  _buttons[btnCLeft] = btnCLeft;
+  _buttons[btnCUp] = btnCUp;
+  _buttons[btnCDown] = btnCDown;
+  _buttons[btnA] = btnA;
+  _buttons[btnCRight] = btnCRight;
 }
 
 void UltimateR4::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
-    outputs.a = inputs.a;
-    outputs.b = inputs.b;
-    outputs.x = inputs.x;
-    outputs.y = inputs.y;
-    outputs.buttonL = inputs.midshield;
-    outputs.buttonR = inputs.z;
-    outputs.triggerLDigital = inputs.l;
-    outputs.triggerRDigital = inputs.r;
-    outputs.start = inputs.start;
-    outputs.select = inputs.select;
-    outputs.home = inputs.home;
+    outputs.a = pressed(btnA);
+    outputs.b = pressed(btnB);
+    outputs.x = pressed(btnX);
+    outputs.y = pressed(btnY);
+    outputs.buttonL = pressed(btnMidshield);
+    outputs.buttonR = pressed(btnZ);
+    outputs.triggerLDigital = pressed(btnL);
+    outputs.triggerRDigital = pressed(btnR);
+    outputs.start = pressed(btnStart);
 
     // Turn on D-Pad layer by holding Mod X + Mod Y
-    if (inputs.mod_x && inputs.mod_y) {
-        outputs.dpadUp = inputs.c_up;
-        outputs.dpadDown = inputs.c_down;
-        outputs.dpadLeft = inputs.c_left;
-        outputs.dpadRight = inputs.c_right;
+    if (pressed(btnModX) && pressed(btnModY)) {
+        outputs.dpadUp = pressed(btnCUp);
+        outputs.dpadDown = pressed(btnCDown);
+        outputs.dpadLeft = pressed(btnCLeft);
+        outputs.dpadRight = pressed(btnCRight);
     }
+}
+
+bool UltimateR4::isPressed(InputState &inputs, int defaultButtonIndex) {
+  int remappedButtonIndex = _buttons[defaultButtonIndex];
+  switch (remappedButtonIndex) {
+    case btnL:
+      return inputs.l;
+    case btnLeft:
+      return inputs.left;
+    case btnDown:
+      return inputs.down;
+    case btnRight:
+      return inputs.right;
+    case btnModX:
+      return inputs.mod_x;
+    case btnModY:
+      return inputs.mod_y;
+    case btnStart:
+      return inputs.start;
+    case btnR:
+      return inputs.r;
+    case btnY:
+      return inputs.y;
+    case btnLightshield:
+      return inputs.lightshield;
+    case btnMidshield:
+      return inputs.midshield;
+    case btnB:
+      return inputs.b;
+    case btnX:
+      return inputs.x;
+    case btnZ:
+      return inputs.z;
+    case btnUp:
+      return inputs.up;
+    case btnCLeft:
+      return inputs.c_left;
+    case btnCUp:
+      return inputs.c_up;
+    case btnCDown:
+      return inputs.c_down;
+    case btnA:
+      return inputs.a;
+    case btnCRight:
+      return inputs.c_right;
+  }
+  return false;
 }
 
 void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     // Coordinate calculations to make modifier handling simpler.
     UpdateDirections(
-        inputs.left,
-        inputs.right,
-        inputs.down,
-        inputs.up,
-        inputs.c_left,
-        inputs.c_right,
-        inputs.c_down,
-        inputs.c_up,
+        pressed(btnLeft),
+        pressed(btnRight),
+        pressed(btnDown),
+        pressed(btnUp),
+        pressed(btnCLeft),
+        pressed(btnCRight),
+        pressed(btnCDown),
+        pressed(btnCUp),
         ANALOG_STICK_MIN,
         ANALOG_STICK_NEUTRAL,
         ANALOG_STICK_MAX,
@@ -84,9 +177,9 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
      * This could be a simple case statement with hard-coded "returns left", etc.
      */
 
-    bool shield_button_pressed = inputs.l || inputs.r;
+    bool shield_button_pressed = pressed(btnL) || pressed(btnR);
 
-    if (inputs.mod_x) {
+    if (pressed(btnModX)) {
         if (directions.horizontal) {
           if (shield_button_pressed) {
             // MX + Horizontal = 51 for shield tilt
@@ -119,62 +212,62 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         /* Up B angles */
         if (directions.diagonal && !shield_button_pressed) {
             // (39.05) = 53 43
-            if (inputs.c_down) {
+            if (pressed(btnCDown)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 43);
             }
             // (36.35) = 53 39
-            if (inputs.c_left) {
+            if (pressed(btnCLeft)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 39);
             }
             // (30.32) = 56 41
-            if (inputs.c_up) {
+            if (pressed(btnCUp)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 31);
             }
             // (27.85) = 49 42
-            if (inputs.c_right) {
+            if (pressed(btnCRight)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 28);
             }
 
             /* Extended Up B Angles */
-            if (inputs.b) {
+            if (pressed(btnB)) {
                 // (33.29) = 67 44
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 44);
                 // (39.38) = 67 55
-                if (inputs.c_down) {
+                if (pressed(btnCDown)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 55);
                 }
                 // (36.18) = 67 49
-                if (inputs.c_left) {
+                if (pressed(btnCLeft)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 49);
                 }
                 // (30.2) = 67 39
-                if (inputs.c_up) {
+                if (pressed(btnCUp)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 39);
                 }
                 // (27.58) = 67 35
-                if (inputs.c_right) {
+                if (pressed(btnCRight)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 35);
                 }
             }
 
             // Angled Ftilts
-            if (inputs.a) {
+            if (pressed(btnA)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 36);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 26);
             }
         }
     }
 
-    if (inputs.mod_y) {
+    if (pressed(btnModY)) {
         if (directions.horizontal) {
           if (shield_button_pressed) {
             outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 51);
@@ -197,55 +290,55 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         /* Up B angles */
         if (directions.diagonal && !shield_button_pressed) {
             // (50.95) = 43 53
-            if (inputs.c_down) {
+            if (pressed(btnCDown)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 43);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
             }
             // (53.65) = 39 53
-            if (inputs.c_left) {
+            if (pressed(btnCLeft)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 49);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
             }
             // (59.68) = 31 53
-            if (inputs.c_up) {
+            if (pressed(btnCUp)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 31);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
             }
             // (62.15) = 28 53
-            if (inputs.c_right) {
+            if (pressed(btnCRight)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
             }
 
             /* Extended Up B Angles */
-            if (inputs.b) {
+            if (pressed(btnB)) {
                 // (56.71) = 44 67
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 44);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
                 // (50.62) = 55 67
-                if (inputs.c_down) {
+                if (pressed(btnCDown)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 55);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
                 }
                 // (53.82) = 49 67
-                if (inputs.c_left) {
+                if (pressed(btnCLeft)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 49);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
                 }
                 // (59.8) = 39 67
-                if (inputs.c_up) {
+                if (pressed(btnCUp)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 39);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
                 }
                 // (62.42) = 35 67
-                if (inputs.c_right) {
+                if (pressed(btnCRight)) {
                     outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 35);
                     outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
                 }
             }
 
             // MY Pivot Uptilt/Dtilt
-            if (inputs.a) {
+            if (pressed(btnA)) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 50);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 65);
             }
@@ -259,28 +352,28 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs.rightStickY = ANALOG_STICK_NEUTRAL + (directions.cy * 68);
     }
 
-    if (inputs.l) {
+    if (pressed(btnL)) {
         outputs.triggerLAnalog = 140;
     }
 
-    if (inputs.r) {
+    if (pressed(btnR)) {
         outputs.triggerRAnalog = 140;
     }
 
     // Shut off C-stick when using D-Pad layer.
-    if (inputs.mod_x && inputs.mod_y) {
+    if (pressed(btnModX) && pressed(btnModY)) {
         outputs.rightStickX = ANALOG_STICK_NEUTRAL;
         outputs.rightStickY = ANALOG_STICK_NEUTRAL;
       
-        if (inputs.lightshield) {
+        if (pressed(btnLightshield)) {
             outputs.select = true;
         }
 
-        if (inputs.midshield) {
+        if (pressed(btnMidshield)) {
             outputs.home = true;
         }
 
-        if (inputs.start) {
+        if (pressed(btnStart)) {
             outputs.home = true;
             outputs.start = false;
         }

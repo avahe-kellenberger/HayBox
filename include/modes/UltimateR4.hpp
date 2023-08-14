@@ -10,8 +10,10 @@ class UltimateR4 : public ControllerMode {
     UltimateR4(socd::SocdType socd_type);
 
   private:
+    int _buttons[20];
     void UpdateDigitalOutputs(InputState &inputs, OutputState &outputs);
     void UpdateAnalogOutputs(InputState &inputs, OutputState &outputs);
+    bool isPressed(InputState &inputs, int defaultButtonIndex);
 };
 
 #endif
