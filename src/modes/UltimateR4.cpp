@@ -1,10 +1,44 @@
 #include "modes/UltimateR4.hpp"
 
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
+json profile = json::parse(R"(
+  {
+    "name": "Default Profile",
+    "socd": "2IP",
+    "buttons": {
+      "l": 1,
+      "left": 2,
+      "down": 3,
+      "right": 4,
+      "modx": 5,
+      "mody": 6,
+      "start": 7,
+      "r": 8,
+      "y": 9,
+      "lightshield": 10,
+      "midshield": 11,
+      "b": 12,
+      "x": 13,
+      "zr": 14,
+      "up": 15,
+      "c-left": 16,
+      "c-up": 17,
+      "c-down": 18,
+      "a": 19,
+      "c-right": 20
+    }
+  }
+)");
+
+
 #define ANALOG_STICK_MIN 28
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 228
 
 #define pressed(b) (this->isPressed(inputs, b))
+#define profileBtn(b) (profile["buttons"][b].template get<int>() - 1)
 
 /**
  * Default button indices.
@@ -40,26 +74,26 @@ UltimateR4::UltimateR4(socd::SocdType socd_type) {
   };
 
   // Default button index mapping
-  _buttons[btnL] = btnL;
-  _buttons[btnLeft] = btnLeft;
-  _buttons[btnDown] = btnDown;
-  _buttons[btnRight] = btnRight;
-  _buttons[btnModX] = btnModX;
-  _buttons[btnModY] = btnModY;
-  _buttons[btnStart] = btnStart;
-  _buttons[btnR] = btnR;
-  _buttons[btnY] = btnY;
-  _buttons[btnLightshield] = btnLightshield;
-  _buttons[btnMidshield] = btnMidshield;
-  _buttons[btnB] = btnB;
-  _buttons[btnX] = btnX;
-  _buttons[btnZ] = btnZ;
-  _buttons[btnUp] = btnUp;
-  _buttons[btnCLeft] = btnCLeft;
-  _buttons[btnCUp] = btnCUp;
-  _buttons[btnCDown] = btnCDown;
-  _buttons[btnA] = btnA;
-  _buttons[btnCRight] = btnCRight;
+  _buttons[btnL] = profileBtn("l");
+  _buttons[btnLeft] = profileBtn("left");
+  _buttons[btnDown] = profileBtn("down");
+  _buttons[btnRight] = profileBtn("right");
+  _buttons[btnModX] = profileBtn("modx");
+  _buttons[btnModY] = profileBtn("mody");
+  _buttons[btnStart] = profileBtn("start");
+  _buttons[btnR] = profileBtn("r");
+  _buttons[btnY] = profileBtn("y");
+  _buttons[btnLightshield] = profileBtn("lightshield");
+  _buttons[btnMidshield] = profileBtn("midshield");
+  _buttons[btnB] = profileBtn("b");
+  _buttons[btnX] = profileBtn("x");
+  _buttons[btnZ] = profileBtn("zr");
+  _buttons[btnUp] = profileBtn("up");
+  _buttons[btnCLeft] = profileBtn("c-left");
+  _buttons[btnCUp] = profileBtn("c-up");
+  _buttons[btnCDown] = profileBtn("c-down");
+  _buttons[btnA] = profileBtn("a");
+  _buttons[btnCRight] = profileBtn("c-right");
 }
 
 void UltimateR4::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
