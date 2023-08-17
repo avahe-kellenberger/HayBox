@@ -6,39 +6,56 @@ using json = nlohmann::json;
 json profile = json::parse(R"(
   {
     "name": "Default Profile",
-    "socd": "2IP",
-    "buttons": {
-      "l": 1,
-      "left": 2,
-      "down": 3,
-      "right": 4,
-      "modx": 5,
-      "mody": 6,
-      "start": 7,
-      "r": 8,
-      "y": 9,
-      "lightshield": 10,
-      "midshield": 11,
-      "b": 12,
-      "x": 13,
-      "zr": 14,
-      "up": 15,
-      "c-left": 16,
-      "c-up": 17,
-      "c-down": 18,
-      "a": 19,
-      "c-right": 20
-    }
+    "authors": [ "Author 1" ],
+    "source": "https://github.com/avahe-kellenberger/b0xx_remapper/blob/master/profile_example.jsonc",
+    "profileVersion": "1.0.0",
+    "verticalSocd": "2IP",
+    "horizontalSocd": "2IP",
+    "inputMap": [
+      { "buttons": [ 1 ], "output": { "l": true } },
+      { "buttons": [ 2 ], "output": { "leftStickX": 28 } },
+      { "buttons": [ 3 ], "output": { "leftStickY": 28 } },
+      { "buttons": [ 4 ], "output": { "leftStickX": 228 } },
+      { "buttons": [ 7 ], "output": { "start": true } },
+      { "buttons": [ 8 ], "output": { "r": true } },
+      { "buttons": [ 9 ], "output": { "y": true } },
+      { "buttons": [ 11 ], "output": { "zl": true } },
+      { "buttons": [ 12 ], "output": { "b": true } },
+      { "buttons": [ 13 ], "output": { "x": true } },
+      { "buttons": [ 14 ], "output": { "zr": true } },
+      { "buttons": [ 15 ], "output": { "leftStickY": 228 } },
+      { "buttons": [ 16 ], "output": { "rightStickX": 28 } },
+      { "buttons": [ 17 ], "output": { "rightStickY": 228 } },
+      { "buttons": [ 18 ], "output": { "rightStickY": 28 } },
+      { "buttons": [ 19 ], "output": { "a": true } },
+      { "buttons": [ 20 ], "output": { "rightStickX": 228 } },
+
+      { "buttons": [ 2, 5 ], "output": { "leftStickX": 75  } },
+      { "buttons": [ 4, 5 ], "output": { "leftStickX": 181 } },
+      { "buttons": [ 3, 5 ], "output": { "leftStickY": 63 } },
+
+      { "buttons": [ 2, 6 ], "output": { "leftStickX": 75  } },
+      { "buttons": [ 4, 6 ], "output": { "leftStickX": 156 } },
+      { "buttons": [ 3, 6 ], "output": { "leftStickY": 63 } },
+
+      { "buttons": [5, 6, 16 ], "output": { "dpadLeft": true } },
+      { "buttons": [5, 6, 17 ], "output": { "dpadUp": true } },
+      { "buttons": [5, 6, 18 ], "output": { "dpadDown": true } },
+      { "buttons": [5, 6, 20 ], "output": { "dpadRight": true } },
+
+      { "buttons": [5, 6, 7 ], "output": { "home": true, "start": false } },
+      { "buttons": [5, 7 ], "output": { "select": true, "start": false } }
+    ]
   }
 )");
 
+json inputMap = profile["inputMap"];
 
 #define ANALOG_STICK_MIN 28
 #define ANALOG_STICK_NEUTRAL 128
 #define ANALOG_STICK_MAX 228
 
-#define pressed(b) (this->isPressed(inputs, b))
-#define profileBtn(b) (profile["buttons"][b].template get<int>() - 1)
+#define pressed(b) (this->isPressed(inputs, b - 1))
 
 /**
  * Default button indices.
@@ -72,53 +89,12 @@ UltimateR4::UltimateR4(socd::SocdType socd_type) {
     socd::SocdPair{ &InputState::c_left, &InputState::c_right, socd_type },
     socd::SocdPair{ &InputState::c_down, &InputState::c_up, socd_type }
   };
-
-  // Default button index mapping
-  _buttons[btnL] = profileBtn("l");
-  _buttons[btnLeft] = profileBtn("left");
-  _buttons[btnDown] = profileBtn("down");
-  _buttons[btnRight] = profileBtn("right");
-  _buttons[btnModX] = profileBtn("modx");
-  _buttons[btnModY] = profileBtn("mody");
-  _buttons[btnStart] = profileBtn("start");
-  _buttons[btnR] = profileBtn("r");
-  _buttons[btnY] = profileBtn("y");
-  _buttons[btnLightshield] = profileBtn("lightshield");
-  _buttons[btnMidshield] = profileBtn("midshield");
-  _buttons[btnB] = profileBtn("b");
-  _buttons[btnX] = profileBtn("x");
-  _buttons[btnZ] = profileBtn("zr");
-  _buttons[btnUp] = profileBtn("up");
-  _buttons[btnCLeft] = profileBtn("c-left");
-  _buttons[btnCUp] = profileBtn("c-up");
-  _buttons[btnCDown] = profileBtn("c-down");
-  _buttons[btnA] = profileBtn("a");
-  _buttons[btnCRight] = profileBtn("c-right");
 }
 
-void UltimateR4::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
-    outputs.a = pressed(btnA);
-    outputs.b = pressed(btnB);
-    outputs.x = pressed(btnX);
-    outputs.y = pressed(btnY);
-    outputs.buttonL = pressed(btnMidshield);
-    outputs.buttonR = pressed(btnZ);
-    outputs.triggerLDigital = pressed(btnL);
-    outputs.triggerRDigital = pressed(btnR);
-    outputs.start = pressed(btnStart);
+void UltimateR4::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) { }
 
-    // Turn on D-Pad layer by holding Mod X + Mod Y
-    if (pressed(btnModX) && pressed(btnModY)) {
-        outputs.dpadUp = pressed(btnCUp);
-        outputs.dpadDown = pressed(btnCDown);
-        outputs.dpadLeft = pressed(btnCLeft);
-        outputs.dpadRight = pressed(btnCRight);
-    }
-}
-
-bool UltimateR4::isPressed(InputState &inputs, int defaultButtonIndex) {
-  int remappedButtonIndex = _buttons[defaultButtonIndex];
-  switch (remappedButtonIndex) {
+bool UltimateR4::isPressed(InputState &inputs, int buttonIndex) {
+  switch (buttonIndex) {
     case btnL:
       return inputs.l;
     case btnLeft:
@@ -163,255 +139,77 @@ bool UltimateR4::isPressed(InputState &inputs, int defaultButtonIndex) {
   return false;
 }
 
+void UltimateR4::assignValue(OutputState &outputs, std::string key, json value) {
+  if (key == "a") {
+    outputs.a = value;
+  } else if (key == "b") {
+    outputs.b = value;
+  } else if (key == "x") {
+    outputs.x = value;
+  } else if (key == "y") {
+    outputs.y = value;
+  } else if (key == "zl") {
+    outputs.buttonL = value;
+  } else if (key == "zr") {
+    outputs.buttonR = value;
+  } else if (key == "l") {
+    outputs.triggerLDigital = value;
+  } else if (key == "r") {
+    outputs.triggerRDigital = value;
+  } else if (key == "start") {
+    outputs.start = value;
+  } else if (key == "select") {
+    outputs.select = value;
+  } else if (key == "home") {
+    outputs.home = value;
+  } else if (key == "dpadUp") {
+    outputs.dpadUp = value;
+  } else if (key == "dpadDown") {
+    outputs.dpadDown = value;
+  } else if (key == "dpadLeft") {
+    outputs.dpadLeft = value;
+  } else if (key == "dpadRight") {
+    outputs.dpadRight = value;
+  } else if (key == "leftStickClick") {
+    outputs.leftStickClick = value;
+  } else if (key == "rightStickClick") {
+    outputs.rightStickClick = value;
+  } else if (key == "leftStickX") {
+    outputs.leftStickX = value;
+  } else if (key == "leftStickY") {
+    outputs.leftStickY = value;
+   } else if (key == "rightStickX") {
+    outputs.rightStickX = value;
+  } else if (key == "rightStickY") {
+    outputs.rightStickY = value;
+  } else if (key == "triggerLAnalog") {
+    outputs.triggerLAnalog = value;
+  } else if (key == "triggerRAnalog") {
+    outputs.triggerRAnalog = value;
+  }
+}
+
 void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
-    // Coordinate calculations to make modifier handling simpler.
-    UpdateDirections(
-        pressed(btnLeft),
-        pressed(btnRight),
-        pressed(btnDown),
-        pressed(btnUp),
-        pressed(btnCLeft),
-        pressed(btnCRight),
-        pressed(btnCDown),
-        pressed(btnCUp),
-        ANALOG_STICK_MIN,
-        ANALOG_STICK_NEUTRAL,
-        ANALOG_STICK_MAX,
-        outputs
-    );
-
-    /**
-     * If I want to check if "left" is pressed,
-     * I need the button selected by the user that represents left.
-     *
-     * Say the user swaps L (index 0) and Left (index 1).
-     * To check for "left",
-     *
-     * I would actually need to check index 0 instead of index 1.
-     * This means I need to derive the "answer" 0 from 1, e.g.:
-     *
-     * int getButtonIndex(int defaultIndex) {
-     *   return buttons[defaultIndex];
-     * }
-     *
-     * Above, buttons is an int[] which contains the remapped button indices.
-     * We can then do the below:
-     * bool isLeftPressed(InputState &inputs) {
-     *   return isPressed(buttons[1]);
-     * }
-     *
-     * bool isRPressed(InputState &inputs) {
-     *   return isPressed(buttons[8]);
-     * }
-     * and so on.
-     *
-     * We then need to implement the "isPressed" function.
-     * This function takes in the default index of a button,
-     * and returns the corresponding InputState value.
-     * This could be a simple case statement with hard-coded "returns left", etc.
-     */
-
-    bool shield_button_pressed = pressed(btnL) || pressed(btnR);
-
-    if (pressed(btnModX)) {
-        if (directions.horizontal) {
-          if (shield_button_pressed) {
-            // MX + Horizontal = 51 for shield tilt
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 51);
-          } else {
-            // Fastest walking speed before run
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-          }
-        } else if (directions.vertical) {
-            // Vertical Shield Tilt and crouch with mod_x = 65
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 65);
-        } else if (directions.diagonal) {
-            // MX + q1/2/3/4 = 53 35
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 34);
-            if (shield_button_pressed) {
-                // TODO: If holding shield, then side, THEN down, it will spot dodge.
-                // MX + L, R, LS, and MS + q1/2/3/4 = 6375 3750 = 51 30
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 51);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 30);
-            }
-        }
-
-        // Angled fsmash/ftilt with C-Stick + MX
-        if (directions.cx != 0) {
-            outputs.rightStickX = ANALOG_STICK_NEUTRAL + (directions.cx * 100);
-            outputs.rightStickY = ANALOG_STICK_NEUTRAL + (directions.y * 59);
-        }
-
-        /* Up B angles */
-        if (directions.diagonal && !shield_button_pressed) {
-            // (39.05) = 53 43
-            if (pressed(btnCDown)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 43);
-            }
-            // (36.35) = 53 39
-            if (pressed(btnCLeft)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 39);
-            }
-            // (30.32) = 56 41
-            if (pressed(btnCUp)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 31);
-            }
-            // (27.85) = 49 42
-            if (pressed(btnCRight)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 28);
-            }
-
-            /* Extended Up B Angles */
-            if (pressed(btnB)) {
-                // (33.29) = 67 44
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 44);
-                // (39.38) = 67 55
-                if (pressed(btnCDown)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 55);
-                }
-                // (36.18) = 67 49
-                if (pressed(btnCLeft)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 49);
-                }
-                // (30.2) = 67 39
-                if (pressed(btnCUp)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 39);
-                }
-                // (27.58) = 67 35
-                if (pressed(btnCRight)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 35);
-                }
-            }
-
-            // Angled Ftilts
-            if (pressed(btnA)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 36);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 26);
-            }
-        }
+  for (json::iterator it = inputMap.begin(); it != inputMap.end(); it++) {
+    json input = it.value();
+    json buttons = input["buttons"];
+    for (json::iterator btnIter = buttons.begin(); btnIter != buttons.end(); btnIter++) {
+      int btn = btnIter.value();
+      if (!pressed(btn)) {
+        // Not all required buttons have been pressed, continue to the next inputMap element.
+        goto ctn;
+      }
     }
 
-    if (pressed(btnModY)) {
-        if (directions.horizontal) {
-          if (shield_button_pressed) {
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 51);
-          } else {
-            // Allow tink/yink walk shield
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
-          }
-        } else if (directions.vertical) {
-            // Vertical Shield Tilt and crouch with mod_x = 50
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 50);
-        } else if (directions.diagonal) {
-            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 34);
-            if (shield_button_pressed) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 51);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 30);
-            }
-        }
-
-        /* Up B angles */
-        if (directions.diagonal && !shield_button_pressed) {
-            // (50.95) = 43 53
-            if (pressed(btnCDown)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 43);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
-            }
-            // (53.65) = 39 53
-            if (pressed(btnCLeft)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 49);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
-            }
-            // (59.68) = 31 53
-            if (pressed(btnCUp)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 31);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
-            }
-            // (62.15) = 28 53
-            if (pressed(btnCRight)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
-            }
-
-            /* Extended Up B Angles */
-            if (pressed(btnB)) {
-                // (56.71) = 44 67
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 44);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                // (50.62) = 55 67
-                if (pressed(btnCDown)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 55);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (53.82) = 49 67
-                if (pressed(btnCLeft)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 49);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (59.8) = 39 67
-                if (pressed(btnCUp)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 39);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (62.42) = 35 67
-                if (pressed(btnCRight)) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 35);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-            }
-
-            // MY Pivot Uptilt/Dtilt
-            if (pressed(btnA)) {
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 50);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 65);
-            }
-        }
+    {
+      // Input match! Use input["output"] to set the output values.
+      json output = input["output"];
+      for (auto& [key, value] : output.items()) {
+        assignValue(outputs, key, value);
+      }
     }
 
-    // C-stick ASDI Slideoff angle overrides any other C-stick modifiers (such as angled fsmash).
-    if (directions.cx != 0 && directions.cy != 0) {
-        // 5250 8500 = 42 68
-        outputs.rightStickX = ANALOG_STICK_NEUTRAL + (directions.cx * 42);
-        outputs.rightStickY = ANALOG_STICK_NEUTRAL + (directions.cy * 68);
-    }
-
-    if (pressed(btnL)) {
-        outputs.triggerLAnalog = 140;
-    }
-
-    if (pressed(btnR)) {
-        outputs.triggerRAnalog = 140;
-    }
-
-    // Shut off C-stick when using D-Pad layer.
-    if (pressed(btnModX) && pressed(btnModY)) {
-        outputs.rightStickX = ANALOG_STICK_NEUTRAL;
-        outputs.rightStickY = ANALOG_STICK_NEUTRAL;
-      
-        if (pressed(btnLightshield)) {
-            outputs.select = true;
-        }
-
-        if (pressed(btnMidshield)) {
-            outputs.home = true;
-        }
-
-        if (pressed(btnStart)) {
-            outputs.home = true;
-            outputs.start = false;
-        }
-    }
-
+    ctn:;
+  }
 }
 
