@@ -24,17 +24,18 @@ json profile = json::parse(R"(
       { "buttons": [ 13 ], "output": { "x": true } },
       { "buttons": [ 14 ], "output": { "zr": true } },
       { "buttons": [ 15 ], "output": { "leftStickY": 228 } },
-      { "buttons": [ 16 ], "output": { "rightStickX": 28 } },
-      { "buttons": [ 17 ], "output": { "rightStickY": 228 } },
-      { "buttons": [ 18 ], "output": { "rightStickY": 28 } },
       { "buttons": [ 19 ], "output": { "a": true } },
-      { "buttons": [ 20 ], "output": { "rightStickX": 228 } },
+
+      { "buttons": [ 16 ], "output": { "leftStickX": 75, "leftStickY": 128, "a": true } },
+      { "buttons": [ 20 ], "output": { "leftStickX": 181, "leftStickY": 128, "a": true } },
+      { "buttons": [ 18 ], "output": { "leftStickY": 75, "leftStickX": 128, "a": true } },
+      { "buttons": [ 17 ], "output": { "leftStickY": 181, "leftStickX": 128, "a": true } },
 
       { "buttons": [ 2, 5 ], "output": { "leftStickX": 75  } },
       { "buttons": [ 4, 5 ], "output": { "leftStickX": 181 } },
       { "buttons": [ 3, 5 ], "output": { "leftStickY": 63 } },
 
-      { "buttons": [ 2, 6 ], "output": { "leftStickX": 75  } },
+      { "buttons": [ 2, 6 ], "output": { "leftStickX": 100  } },
       { "buttons": [ 4, 6 ], "output": { "leftStickX": 156 } },
       { "buttons": [ 3, 6 ], "output": { "leftStickY": 63 } },
 
