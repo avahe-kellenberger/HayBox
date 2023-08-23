@@ -1,55 +1,10 @@
+#include <fstream>
 #include "modes/UltimateR4.hpp"
-
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
-json profile = json::parse(R"(
-  {
-    "name": "Default Profile",
-    "authors": [ "Author 1" ],
-    "source": "https://github.com/avahe-kellenberger/b0xx_remapper/blob/master/profile_example.jsonc",
-    "profileVersion": "1.0.0",
-    "verticalSocd": "2IP",
-    "horizontalSocd": "2IP",
-    "inputMap": [
-      { "buttons": [ 1 ], "output": { "l": true } },
-      { "buttons": [ 2 ], "output": { "leftStickX": 28 } },
-      { "buttons": [ 3 ], "output": { "leftStickY": 28 } },
-      { "buttons": [ 4 ], "output": { "leftStickX": 228 } },
-      { "buttons": [ 7 ], "output": { "start": true } },
-      { "buttons": [ 8 ], "output": { "r": true } },
-      { "buttons": [ 9 ], "output": { "y": true } },
-      { "buttons": [ 11 ], "output": { "zl": true } },
-      { "buttons": [ 12 ], "output": { "b": true } },
-      { "buttons": [ 13 ], "output": { "x": true } },
-      { "buttons": [ 14 ], "output": { "zr": true } },
-      { "buttons": [ 15 ], "output": { "leftStickY": 228 } },
-      { "buttons": [ 19 ], "output": { "a": true } },
-
-      { "buttons": [ 16 ], "output": { "leftStickX": 75, "leftStickY": 128, "a": true } },
-      { "buttons": [ 20 ], "output": { "leftStickX": 181, "leftStickY": 128, "a": true } },
-      { "buttons": [ 18 ], "output": { "leftStickY": 75, "leftStickX": 128, "a": true } },
-      { "buttons": [ 17 ], "output": { "leftStickY": 181, "leftStickX": 128, "a": true } },
-
-      { "buttons": [ 2, 5 ], "output": { "leftStickX": 75  } },
-      { "buttons": [ 4, 5 ], "output": { "leftStickX": 181 } },
-      { "buttons": [ 3, 5 ], "output": { "leftStickY": 63 } },
-
-      { "buttons": [ 2, 6 ], "output": { "leftStickX": 100  } },
-      { "buttons": [ 4, 6 ], "output": { "leftStickX": 156 } },
-      { "buttons": [ 3, 6 ], "output": { "leftStickY": 63 } },
-
-      { "buttons": [5, 6, 16 ], "output": { "dpadLeft": true } },
-      { "buttons": [5, 6, 17 ], "output": { "dpadUp": true } },
-      { "buttons": [5, 6, 18 ], "output": { "dpadDown": true } },
-      { "buttons": [5, 6, 20 ], "output": { "dpadRight": true } },
-
-      { "buttons": [5, 6, 7 ], "output": { "home": true, "start": false } },
-      { "buttons": [5, 7 ], "output": { "select": true, "start": false } }
-    ]
-  }
-)");
-
+std::ifstream f("profile.json");
+json profile = json::parse(f);
 json inputMap = profile["inputMap"];
 
 #define ANALOG_STICK_MIN 28
