@@ -428,6 +428,12 @@ As a slightly crazier hypothetical example, one could even power all the control
 
 ## Troubleshooting
 
+### Debugging
+
+The following expression can be used to view `Serial` logs, etc. with `minicom`:
+
+`minicom -b 115200 -o -D /dev/ttyACM0`
+
 ### Controller not working with console or GameCube adapter
 
 If you are using an official adapter with an Arduino-based controller you will likely have to hold A on plugin which disables the polling latency optimisation by passing in a polling rate of 0 to the GamecubeBackend constructor.
