@@ -97,7 +97,7 @@ const int btnCDown = 17;
 const int btnA = 18;
 const int btnCRight = 19;
 
-UltimateR4::UltimateR4(socd::SocdType socd_type) {
+UltimateR4::UltimateR4(socd::SocdType socd_type, char* rawJson) {
   _socd_pair_count = 4;
   _socd_pairs = new socd::SocdPair[_socd_pair_count]{
     socd::SocdPair{ &InputState::left,   &InputState::right, socd_type },

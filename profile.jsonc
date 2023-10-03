@@ -45,13 +45,13 @@
     { "buttons": [ 2, 6 ], "output": { "leftStickX": 100 } },
     { "buttons": [ 4, 6 ], "output": { "leftStickX": 156 } },
     { "buttons": [ 3, 6 ], "output": { "leftStickY": 63 } },
-    
+
     // Dpad
     { "buttons": [5, 6, 16 ], "output": { "dpadLeft": true, "rightStickX": 128 } },
     { "buttons": [5, 6, 17 ], "output": { "dpadUp": true, "rightStickY": 128 } },
     { "buttons": [5, 6, 18 ], "output": { "dpadDown": true, "rightStickY": 128 } },
     { "buttons": [5, 6, 20 ], "output": { "dpadRight": true, "rightStickX": 128 } },
-  
+
     // Special buttons
     { "buttons": [5, 6, 7 ], "output": { "home": true, "start": false } },
     { "buttons": [5, 7 ], "output": { "select": true, "start": false } }

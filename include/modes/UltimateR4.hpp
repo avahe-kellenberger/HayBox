@@ -10,7 +10,7 @@ using json = nlohmann::json;
 
 class UltimateR4 : public ControllerMode {
   public:
-    UltimateR4(socd::SocdType socd_type);
+    UltimateR4(socd::SocdType socd_type, char* rawJson);
 
   private:
     int _buttons[20];
