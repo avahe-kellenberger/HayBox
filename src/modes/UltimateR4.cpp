@@ -39,6 +39,10 @@ std::string rawJson = R"(
       { "buttons": [ 5, 20 ], "output": { "rightStickX": 228, "rightStickY": 228 } },
       { "buttons": [ 6, 20 ], "output": { "rightStickX": 228, "rightStickY": 28 } },
 
+      // Angled special (I want running turn-around down b)
+      { "buttons": [ 2, 3, 12 ], "output": { "b": true, "leftStickX": 63, "leftStickY": 28 } },
+      { "buttons": [ 3, 4, 12 ], "output": { "b": true, "leftStickX": 193, "leftStickY": 28 } },
+
       // ModX
       { "buttons": [ 2, 5 ], "output": { "leftStickX": 75 } },
       { "buttons": [ 4, 5 ], "output": { "leftStickX": 181 } },
