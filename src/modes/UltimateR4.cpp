@@ -33,11 +33,11 @@ std::string rawJson = R"(
       { "buttons": [ 19 ], "output": { "a": true } },
       { "buttons": [ 20 ], "output": { "rightStickX": 228 } },
 
-      // Angled aerials with c-stick
-      { "buttons": [ 16, 15 ], "output": { "rightStickX": 28, "rightStickY": 228 } },
-      { "buttons": [ 16, 3 ], "output": { "rightStickX": 28, "rightStickY": 28 } },
-      { "buttons": [ 20, 15 ], "output": { "rightStickX": 228, "rightStickY": 228 } },
-      { "buttons": [ 20, 3 ], "output": { "rightStickX": 228, "rightStickY": 28 } },
+      // Angled tilts/aerials with c-stick and ModX/ModY
+      { "buttons": [ 5, 16 ], "output": { "rightStickX": 28, "rightStickY": 228 } },
+      { "buttons": [ 6, 16 ], "output": { "rightStickX": 28, "rightStickY": 28 } },
+      { "buttons": [ 5, 20 ], "output": { "rightStickX": 228, "rightStickY": 228 } },
+      { "buttons": [ 6, 20 ], "output": { "rightStickX": 228, "rightStickY": 28 } },
 
       // ModX
       { "buttons": [ 2, 5 ], "output": { "leftStickX": 75 } },
