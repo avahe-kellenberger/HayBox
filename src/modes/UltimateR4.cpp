@@ -55,6 +55,21 @@ std::string rawJson = R"(
       { "buttons": [ 4, 6 ], "output": { "leftStickX": 156 } },
       { "buttons": [ 3, 6 ], "output": { "leftStickY": 63 } },
 
+      // Double shield
+      { "buttons": [ 1, 5 ], "output": { "l": true, "r": true } },
+      { "buttons": [ 1, 6 ], "output": { "l": true, "r": true } },
+
+      // If you're holding L + ModX/ModY, don't inhibit drift
+      { "buttons": [ 1, 5, 2 ], "output": { "l": true, "r": true,  "leftStickX": 28 } },
+      { "buttons": [ 1, 5, 3 ], "output": { "l": true, "r": true,  "leftStickY": 28 } },
+      { "buttons": [ 1, 5, 4 ], "output": { "l": true, "r": true,  "leftStickX": 228 } },
+      { "buttons": [ 1, 5, 15 ], "output": { "l": true, "r": true,  "leftStickY": 228 } },
+      // ModY
+      { "buttons": [ 1, 6, 2 ], "output": { "l": true, "r": true,  "leftStickX": 28 } },
+      { "buttons": [ 1, 6, 3 ], "output": { "l": true, "r": true,  "leftStickY": 28 } },
+      { "buttons": [ 1, 6, 4 ], "output": { "l": true, "r": true,  "leftStickX": 228 } },
+      { "buttons": [ 1, 6, 15 ], "output": { "l": true, "r": true,  "leftStickY": 228 } },
+
       // Dpad
       { "buttons": [5, 6, 16 ], "output": { "dpadLeft": true, "rightStickX": 128 } },
       { "buttons": [5, 6, 17 ], "output": { "dpadUp": true, "rightStickY": 128 } },
