@@ -82,6 +82,9 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
 
         /* Up B angles */
         if (directions.diagonal) {
+            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
+            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 60);
+
             // (39.05) = 53 43
             if (inputs.c_down) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
@@ -101,33 +104,6 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             if (inputs.c_right) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 28);
-            }
-
-            /* Extended Up B Angles */
-            if (inputs.b) {
-                // (33.29) = 67 44
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 60);
-                // (39.38) = 67 55
-                if (inputs.c_down) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 55);
-                }
-                // (36.18) = 67 49
-                if (inputs.c_left) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 49);
-                }
-                // (30.2) = 67 39
-                if (inputs.c_up) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 39);
-                }
-                // (27.58) = 67 35
-                if (inputs.c_right) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 67);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 35);
-                }
             }
 
             // Angled Ftilts
@@ -164,6 +140,10 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
 
         /* Up B angles */
         if (directions.diagonal) {
+            // (56.71) = 44 67
+            outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 44);
+            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
+
             // (50.95) = 43 53
             if (inputs.c_down) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 43);
@@ -183,33 +163,6 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             if (inputs.c_right) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
-            }
-
-            /* Extended Up B Angles */
-            if (inputs.b) {
-                // (56.71) = 44 67
-                outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 44);
-                outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                // (50.62) = 55 67
-                if (inputs.c_down) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 55);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (53.82) = 49 67
-                if (inputs.c_left) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 49);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (59.8) = 39 67
-                if (inputs.c_up) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 39);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
-                // (62.42) = 35 67
-                if (inputs.c_right) {
-                    outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 35);
-                    outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 67);
-                }
             }
 
             // MY Pivot Uptilt/Dtilt
