@@ -15,28 +15,32 @@ FgcMode::FgcMode(socd::SocdType horizontal_socd, socd::SocdType vertical_socd) {
 }
 
 void FgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
-    // Directions
-    outputs.dpadLeft = inputs.left;
-    outputs.dpadRight = inputs.right;
-    outputs.dpadDown = inputs.down;
-    outputs.dpadUp = inputs.mod_x || inputs.c_up;
-
     // Menu keys
     outputs.start = inputs.start;
     outputs.select = inputs.c_left;
     outputs.home = inputs.c_down;
 
+    // Directions
+    outputs.dpadLeft = inputs.left;
+    outputs.dpadRight = inputs.right;
+    outputs.dpadDown = inputs.down;
+    outputs.dpadUp = inputs.mod_x;
+
+    // Left thumb
+    outputs.triggerLDigital = inputs.mod_y;
+    outputs.triggerRDigital = inputs.a;
+
     // Right hand bottom row
     outputs.a = inputs.b;
     outputs.b = inputs.x;
-    outputs.triggerRDigital = inputs.z;
-    outputs.triggerLDigital = inputs.up;
+    outputs.buttonR = inputs.z;
+    outputs.buttonL = inputs.up;
 
     // Right hand top row
     outputs.x = inputs.r;
     outputs.y = inputs.y;
-    outputs.buttonR = inputs.lightshield;
-    outputs.buttonL = inputs.midshield;
+    outputs.leftStickClick = inputs.midshield;
+    outputs.rightStickClick = inputs.lightshield;
 }
 
 void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
@@ -44,6 +48,4 @@ void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     outputs.leftStickY = 128;
     outputs.rightStickX = 128;
     outputs.rightStickY = 128;
-    outputs.triggerLAnalog = outputs.triggerLDigital ? 255 : 0;
-    outputs.triggerRAnalog = outputs.triggerRDigital ? 255 : 0;
 }
