@@ -39,8 +39,8 @@ void FgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     // Right hand top row
     outputs.x = inputs.r;
     outputs.y = inputs.y;
-    outputs.leftStickClick = inputs.lightshield;
-    outputs.rightStickClick = inputs.midshield;
+    outputs.leftStickClick = inputs.midshield;
+    outputs.rightStickClick = inputs.lightshield;
 }
 
 void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
@@ -48,6 +48,4 @@ void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     outputs.leftStickY = 128;
     outputs.rightStickX = 128;
     outputs.rightStickY = 128;
-    // outputs.triggerLAnalog = outputs.triggerLDigital ? 255 : 0;
-    // outputs.triggerRAnalog = outputs.triggerRDigital ? 255 : 0;
 }
