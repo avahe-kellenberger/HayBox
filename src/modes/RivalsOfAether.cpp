@@ -45,7 +45,7 @@ void RivalsOfAether::UpdateAnalogOutputs(InputState &inputs, OutputState &output
         inputs.up,
         inputs.c_left,
         inputs.c_right,
-        inputs.c_down,
+        false, // inputs.c_down,
         inputs.c_up,
         ANALOG_STICK_MIN,
         ANALOG_STICK_NEUTRAL,
