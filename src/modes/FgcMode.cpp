@@ -37,6 +37,9 @@ void FgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
     outputs.y = inputs.y;
     outputs.buttonR = inputs.lightshield;
     outputs.buttonL = inputs.midshield;
+
+    outputs.leftStickClick = inputs.a;
+    outputs.rightStickClick = inputs.c_right;
 }
 
 void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {

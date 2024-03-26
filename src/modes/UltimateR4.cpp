@@ -258,6 +258,14 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
             outputs.home = true;
             outputs.start = false;
         }
+
+        if (inputs.a) {
+            outputs.leftStickClick = true;
+        }
+
+        if (inputs.b) {
+            outputs.rightStickClick = true;
+        }
     }
 
 }
