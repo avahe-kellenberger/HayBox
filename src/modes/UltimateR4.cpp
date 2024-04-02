@@ -19,10 +19,12 @@ void UltimateR4::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) 
     outputs.b = inputs.b;
     outputs.x = inputs.x;
     outputs.y = inputs.y;
-    outputs.buttonL = inputs.midshield;
-    outputs.buttonR = inputs.z;
+    // outputs.buttonL = inputs.midshield;
+    outputs.leftStickClick = inputs.midshield;
+    outputs.rightStickClick = inputs.lightshield;
+    outputs.buttonR = inputs.r;
     outputs.triggerLDigital = inputs.l;
-    outputs.triggerRDigital = inputs.r;
+    outputs.triggerRDigital = inputs.z;
     outputs.start = inputs.start;
     outputs.select = inputs.select;
     outputs.home = inputs.home;
@@ -53,7 +55,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs
     );
 
-    bool shield_button_pressed = inputs.l || inputs.r;
+    bool shield_button_pressed = inputs.l || inputs.z;
 
     if (inputs.mod_x) {
         if (shield_button_pressed) {
@@ -174,7 +176,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     }
 
     // Angled special while running to do down special
-    if (inputs.b && directions.horizontal && inputs.down) {
+    if (!inputs.mod_x && !inputs.mod_y && inputs.b && directions.horizontal && inputs.down) {
         outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 65);
         outputs.leftStickY = ANALOG_STICK_MIN;
     }
@@ -190,7 +192,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
         outputs.triggerLAnalog = 140;
     }
 
-    if (inputs.r) {
+    if (inputs.z) {
         outputs.triggerRAnalog = 140;
     }
 
@@ -198,7 +200,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     if (inputs.mod_x && inputs.mod_y) {
         outputs.rightStickX = ANALOG_STICK_NEUTRAL;
         outputs.rightStickY = ANALOG_STICK_NEUTRAL;
-      
+
         if (inputs.lightshield) {
             outputs.select = true;
         }

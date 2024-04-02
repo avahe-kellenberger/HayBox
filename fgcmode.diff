@@ -1,0 +1,63 @@
+diff --git a/src/modes/FgcMode.cpp b/src/modes/FgcMode.cpp
+index 4928a89..58a6b2b 100644
+--- a/src/modes/FgcMode.cpp
++++ b/src/modes/FgcMode.cpp
+@@ -15,28 +15,39 @@ FgcMode::FgcMode(socd::SocdType horizontal_socd, socd::SocdType vertical_socd) {
+ }
+ 
+ void FgcMode::UpdateDigitalOutputs(InputState &inputs, OutputState &outputs) {
++     // Menu keys
++    outputs.start = inputs.start;
++    outputs.select = inputs.c_left;
++    outputs.home = inputs.c_down;
++
++    // Left row
++    outputs.triggerLDigital = inputs.l;
++
+     // Directions
+     outputs.dpadLeft = inputs.left;
+     outputs.dpadRight = inputs.right;
+     outputs.dpadDown = inputs.down;
+-    outputs.dpadUp = inputs.mod_x || inputs.c_up;
++    outputs.dpadUp = inputs.mod_x;
++    
+ 
+-    // Menu keys
+-    outputs.start = inputs.start;
+-    outputs.select = inputs.c_left;
+-    outputs.home = inputs.c_down;
++    // Left thumb
++    // outputs.triggerLDigital = inputs.mod_y;
++    outputs.triggerRDigital = inputs.a;
+ 
+     // Right hand bottom row
+-    outputs.a = inputs.b;
+-    outputs.b = inputs.x;
+-    outputs.triggerRDigital = inputs.z;
+-    outputs.triggerLDigital = inputs.up;
++    outputs.y = inputs.b;
++    outputs.a = inputs.x;
++    outputs.x = inputs.z;
++    outputs.triggerRDigital = inputs.up;
++
++    // Right thumb
++    outputs.b = inputs.a;
+ 
+     // Right hand top row
+-    outputs.x = inputs.r;
+-    outputs.y = inputs.y;
++    outputs.buttonL = inputs.r;
++    outputs.leftStickClick = inputs.y;
++    outputs.rightStickClick = inputs.midshield;
+     outputs.buttonR = inputs.lightshield;
+-    outputs.buttonL = inputs.midshield;
+ }
+ 
+ void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
+@@ -44,6 +55,4 @@ void FgcMode::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
+     outputs.leftStickY = 128;
+     outputs.rightStickX = 128;
+     outputs.rightStickY = 128;
+-    outputs.triggerLAnalog = outputs.triggerLDigital ? 255 : 0;
+-    outputs.triggerRAnalog = outputs.triggerRDigital ? 255 : 0;
+ }
