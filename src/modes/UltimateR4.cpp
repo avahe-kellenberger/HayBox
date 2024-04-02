@@ -72,7 +72,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
           if (directions.diagonal) {
             // MX + q1/2/3/4 = 53 34
             outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 34);
+            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 65);
           } else if (directions.horizontal) {
             // Fastest walking speed before run
             outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
@@ -133,7 +133,7 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
 
           if (directions.diagonal) {
             outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 53);
-            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 34);
+            outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 65);
           } else if (directions.horizontal) {
             // Allow tink/yink walk shield
             outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
