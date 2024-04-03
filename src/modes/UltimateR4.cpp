@@ -108,6 +108,9 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 28);
             }
 
+            outputs.rightStickX = ANALOG_STICK_NEUTRAL;
+            outputs.rightStickY = ANALOG_STICK_NEUTRAL;
+
             // Angled Ftilts
             if (inputs.a) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 36);
@@ -166,6 +169,9 @@ void UltimateR4::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
                 outputs.leftStickX = ANALOG_STICK_NEUTRAL + (directions.x * 28);
                 outputs.leftStickY = ANALOG_STICK_NEUTRAL + (directions.y * 53);
             }
+
+            outputs.rightStickX = ANALOG_STICK_NEUTRAL;
+            outputs.rightStickY = ANALOG_STICK_NEUTRAL;
 
             // MY Pivot Uptilt/Dtilt
             if (inputs.a) {
