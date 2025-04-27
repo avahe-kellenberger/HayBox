@@ -24,33 +24,33 @@ size_t backend_count;
 KeyboardMode *current_kb_mode = nullptr;
 
 GpioButtonMapping button_mappings[] = {
-    {&InputState::l,            5 },
-    { &InputState::left,        4 },
-    { &InputState::down,        3 },
-    { &InputState::right,       2 },
+    { &InputState::l,           5  },
+    { &InputState::left,        4  },
+    { &InputState::down,        3  },
+    { &InputState::right,       2  },
 
-    { &InputState::mod_x,       6 },
-    { &InputState::mod_y,       7 },
+    { &InputState::mod_x,       6  },
+    { &InputState::mod_y,       7  },
 
-    { &InputState::select,      10},
-    { &InputState::start,       0 },
-    { &InputState::home,        11},
+    { &InputState::select,      10 },
+    { &InputState::start,       0  },
+    { &InputState::home,        11 },
 
-    { &InputState::c_left,      13},
-    { &InputState::c_up,        12},
-    { &InputState::c_down,      15},
-    { &InputState::a,           14},
-    { &InputState::c_right,     16},
+    { &InputState::c_left,      13 },
+    { &InputState::c_up,        12 },
+    { &InputState::c_down,      15 },
+    { &InputState::a,           14 },
+    { &InputState::c_right,     16 },
 
-    { &InputState::b,           26},
-    { &InputState::x,           21},
-    { &InputState::z,           19},
-    { &InputState::up,          17},
+    { &InputState::b,           26 },
+    { &InputState::x,           21 },
+    { &InputState::z,           19 },
+    { &InputState::up,          17 },
 
-    { &InputState::r,           27},
-    { &InputState::y,           22},
-    { &InputState::lightshield, 20},
-    { &InputState::midshield,   18},
+    { &InputState::r,           27 },
+    { &InputState::y,           22 },
+    { &InputState::lightshield, 20 },
+    { &InputState::midshield,   18 },
 };
 size_t button_count = sizeof(button_mappings) / sizeof(GpioButtonMapping);
 
@@ -89,78 +89,75 @@ void setup() {
     CommunicationBackend *primary_backend;
     if (console == ConnectedConsole::NONE) {
         if (button_holds.x) {
-            // If no console detected and X is held on plugin then use Switch USB backend.
-            NintendoSwitchBackend::RegisterDescriptor();
-            backend_count = 1;
-            primary_backend = new NintendoSwitchBackend(input_sources, input_source_count);
-            backends = new CommunicationBackend *[backend_count] { primary_backend };
-
-            // Default to Ultimate mode on Switch.
-            primary_backend->SetGameMode(new Ultimate(socd::SOCD_2IP));
-            return;
-        } else if (button_holds.z) {
-            // If no console detected and Z is held on plugin then use DInput backend.
-            TUGamepad::registerDescriptor();
-            TUKeyboard::registerDescriptor();
-            backend_count = 2;
-            primary_backend = new DInputBackend(input_sources, input_source_count);
-            backends = new CommunicationBackend *[backend_count] {
-                primary_backend, new B0XXInputViewer(input_sources, input_source_count)
-            };
-        } else {
-            // Default to XInput mode if no console detected and no other mode forced.
+            // Hold X for XInput
             backend_count = 2;
             primary_backend = new XInputBackend(input_sources, input_source_count);
             backends = new CommunicationBackend *[backend_count] {
                 primary_backend, new B0XXInputViewer(input_sources, input_source_count)
             };
+            if (button_holds.c_down) {
+                primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
+            } else {
+                primary_backend->SetGameMode(new HDR(socd::SOCD_2IP));
+            }
+        } else if (button_holds.b) {
+            // Hold B for Melee (slippi)
+            backend_count = 1;
+            primary_backend = new XInputBackend(input_sources, input_source_count);
+            backends = new CommunicationBackend *[backend_count] { primary_backend };
+            socd::SocdType socdType =
+                (button_holds.r && button_holds.y) ? socd::SOCD_2IP_NO_REAC : socd::SOCD_2IP;
+            primary_backend->SetGameMode(new Melee20Button(socdType, { .crouch_walk_os = false }));
+        } else if (button_holds.y) {
+            // Hold Y for FGC Mode
+            backend_count = 2;
+            primary_backend = new XInputBackend(input_sources, input_source_count);
+            backends = new CommunicationBackend *[backend_count] {
+                primary_backend, new B0XXInputViewer(input_sources, input_source_count)
+            };
+            primary_backend->SetGameMode(new FgcMode(socd::SOCD_NEUTRAL, socd::SOCD_NEUTRAL));
+        } else if (button_holds.c_down) {
+            // Switch backend with HDR profile
+            NintendoSwitchBackend::RegisterDescriptor();
+            backend_count = 1;
+            primary_backend = new NintendoSwitchBackend(input_sources, input_source_count);
+            backends = new CommunicationBackend *[backend_count] { primary_backend };
+            primary_backend->SetGameMode(new HDR(socd::SOCD_2IP));
+        } else {
+            // Default to Switch (detect_console returns NONE for the Switch!)
+            NintendoSwitchBackend::RegisterDescriptor();
+            backend_count = 1;
+            primary_backend = new NintendoSwitchBackend(input_sources, input_source_count);
+            backends = new CommunicationBackend *[backend_count] { primary_backend };
+            primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
         }
     } else {
         if (console == ConnectedConsole::GAMECUBE) {
+            // NOTE: This is called when using a gcc adapter with the switch!
             primary_backend =
                 new GamecubeBackend(input_sources, input_source_count, pinout.joybus_data);
+            if (button_holds.b) {
+                primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
+            } else {
+                socd::SocdType socdType =
+                    (button_holds.r && button_holds.y) ? socd::SOCD_2IP_NO_REAC : socd::SOCD_2IP;
+                primary_backend->SetGameMode(
+                    new Melee20Button(socdType, { .crouch_walk_os = false })
+                );
+            }
         } else if (console == ConnectedConsole::N64) {
             primary_backend = new N64Backend(input_sources, input_source_count, pinout.joybus_data);
+            primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
         }
-
         // If console then only using 1 backend (no input viewer).
         backend_count = 1;
         backends = new CommunicationBackend *[backend_count] { primary_backend };
     }
-
-    // Default to Melee mode.
-    primary_backend->SetGameMode(
-        new Melee20Button(socd::SOCD_2IP_NO_REAC, { .crouch_walk_os = false })
-    );
 }
 
 void loop() {
     select_mode(backends[0]);
-
     for (size_t i = 0; i < backend_count; i++) {
         backends[i]->SendReport();
-    }
-
-    if (current_kb_mode != nullptr) {
-        current_kb_mode->SendReport(backends[0]->GetInputs());
-    }
-}
-
-/* Nunchuk code runs on the second core */
-NunchukInput *nunchuk = nullptr;
-
-void setup1() {
-    while (backends == nullptr) {
-        tight_loop_contents();
-    }
-
-    // Create Nunchuk input source.
-    nunchuk = new NunchukInput(Wire, pinout.nunchuk_detect, pinout.nunchuk_sda, pinout.nunchuk_scl);
-}
-
-void loop1() {
-    if (backends != nullptr) {
-        nunchuk->UpdateInputs(backends[0]->GetInputs());
-        busy_wait_us(50);
     }
 }

@@ -7,5 +7,6 @@ if [ -z "$profile" ]; then
   exit 0
 fi
 
-pio run -e "$profile" -t upload
+# pio run -e "$profile" -t upload
+pio run -e "$profile"
 

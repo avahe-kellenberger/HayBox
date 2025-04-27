@@ -10,6 +10,7 @@
 #include "modes/Ultimate.hpp"
 #include "modes/UltimateR4.hpp"
 #include "modes/Rivals2.hpp"
+#include "modes/HDR.hpp"
 
 extern KeyboardMode *current_kb_mode;
 
@@ -44,19 +45,20 @@ void select_mode(CommunicationBackend *backend) {
             set_mode(
                 backend,
                 new ProjectM(
-                    socd::SOCD_2IP_NO_REAC,
+                    socd::SOCD_2IP,
                     { .true_z_press = false, .ledgedash_max_jump_traj = true }
                 )
             );
         } else if (inputs.down) {
-            // TODO: Should I make this switch to UltimateR4?
-            set_mode(backend, new Ultimate(socd::SOCD_2IP));
+            set_mode(backend, new UltimateR4(socd::SOCD_2IP));
         } else if (inputs.right) {
             set_mode(backend, new FgcMode(socd::SOCD_NEUTRAL, socd::SOCD_NEUTRAL));
         } else if (inputs.b) {
             set_mode(backend, new RivalsOfAether(socd::SOCD_2IP));
         } else if (inputs.r) {
             set_mode(backend, new Rivals2(socd::SOCD_2IP));
+        } else if (inputs.c_down) {
+            set_mode(backend, new HDR(socd::SOCD_2IP));
         }
     } else if (inputs.mod_y && !inputs.mod_x && inputs.start) {
         if (inputs.l) {
