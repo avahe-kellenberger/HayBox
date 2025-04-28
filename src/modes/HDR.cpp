@@ -234,11 +234,11 @@ void HDR::UpdateAnalogOutputs(InputState &inputs, OutputState &outputs) {
     }
 
     if (inputs.l) {
-        outputs.triggerLAnalog = 140;
+        outputs.triggerLAnalog = ANALOG_STICK_MAX;
     }
 
     if (inputs.r) {
-        outputs.triggerRAnalog = 140;
+        outputs.triggerRAnalog = ANALOG_STICK_MAX;
     }
 
     // Shut off C-stick when using D-Pad layer.

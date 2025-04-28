@@ -96,9 +96,9 @@ void setup() {
                 primary_backend, new B0XXInputViewer(input_sources, input_source_count)
             };
             if (button_holds.c_down) {
-                primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
-            } else {
                 primary_backend->SetGameMode(new HDR(socd::SOCD_2IP));
+            } else {
+                primary_backend->SetGameMode(new UltimateR4(socd::SOCD_2IP));
             }
         } else if (button_holds.b) {
             // Hold B for Melee (slippi)

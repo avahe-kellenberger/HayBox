@@ -41,10 +41,12 @@ void XInputBackend::SendReport() {
     _report.x = _outputs.x;
     _report.y = _outputs.y;
 
-    _report.lb = _outputs.triggerLDigital;
-    _report.rb = _outputs.triggerRDigital;
-    _report.lt = _outputs.buttonL ? 255 : _outputs.triggerLAnalog;
-    _report.rt = _outputs.buttonR ? 255 : _outputs.triggerRAnalog;
+    // _report.lt = _outputs.triggerLDigital;
+    // _report.rt = _outputs.triggerRDigital;
+    _report.lt = _outputs.triggerLAnalog;
+    _report.rt = _outputs.triggerRAnalog;
+    _report.lb = _outputs.buttonL;
+    _report.rb = _outputs.buttonR;
 
     _report.start = _outputs.start;
     _report.back = _outputs.select;
@@ -64,4 +66,3 @@ void XInputBackend::SendReport() {
 
     _xinput->sendReport(&_report);
 }
-
